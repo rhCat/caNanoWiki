@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <style>
+        body {
+            background-color: #11182B;
+            font-family: Arial, sans-serif;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        
+        .login-container {
+            width: 350px;
+            padding: 20px;
+            background-color: #223E6D;
+            border-radius: 10px;
+        }
+
+        .login-container label, .login-container input {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .login-container input {
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .login-container button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #2D82B7;
+            color: #FFFFFF;
+            cursor: pointer;
+        }
+
+        .login-container button:hover {
+            background-color: #1B577B;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Login</h1>
+        <form method="POST" action="/login">
+            <label for="passcode">Please enter the passcode:</label>
+            <input type="password" id="passcode" name="passcode">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
