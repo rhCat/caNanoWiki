@@ -1,6 +1,8 @@
 # caNanoWiki_AI Web Application
 This hobby project aims to provide a chatGPT powered digital assistant to help users look for answers in a Wiki. The project is inspired by the OpenAI cookbook  project, but realizing there are a lot of concepts to understand and infrastructures to make it work.
 
+Authors are Rui He and Weina Ke. 
+
 This repository contains a Flask-based web application designed to interact with OpenAI's GPT-3.5 Turbo model. The application is primarily used for answering queries with context, leveraging the capabilities of the GPT-3.5 Turbo model.
 
 ## Key Features
