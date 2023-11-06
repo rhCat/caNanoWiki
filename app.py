@@ -1,20 +1,13 @@
 import os
-import re
 import sys
-import csv
 import time
 import pickle
 import openai
-import tiktoken
-import numpy as np
 import configparser
-import pandas as pd
 from flask import Flask, render_template, request, redirect, url_for
 dir_path = os.path.abspath(os.getcwd())
 
-utils_path = dir_path + "/src/utils"
 src_path = dir_path + "/src"
-sys.path.append(utils_path)
 sys.path.append(src_path)
 
 COMPLETIONS_MODEL = "gpt-3.5-turbo"
@@ -24,8 +17,7 @@ config = configparser.ConfigParser()
 config.read(os.path.join(config_dir, 'gpt_local_config.cfg'))
 openai.api_key = config.get('token', 'GPT_TOKEN')
 
-import embedding_qa
-import embedding_util
+import embedding_qa as emq
 
 # Specify the path to your pickle file
 pickle_file_path = 'caNano_embedding_pack_5_14.pickle'
@@ -38,31 +30,33 @@ document_df = loaded_data['df']
 document_embedding = loaded_data['embedding']
 
 COMPLETIONS_API_PARAMS = {
-# We use temperature of 0.0 because it gives the most predictable, factual answer.
-"temperature": 0.0,
-"max_tokens": 800,
-"model": "gpt-3.5-turbo"
+    # We use temperature of 0.0 because it gives the
+    # most predictable, factual answer.
+    "temperature": 0.0,
+    "max_tokens": 800,
+    "model": "gpt-3.5-turbo"
 }
-
 
 app = Flask("caNanoWiki_AI")
 
 # Set the passcode for authentication
-PASSCODE_auth = "Strong_Password_is_4_real!"
+PASSCODE_auth = ""
 
 # Define a variable to track if the user is authenticated
 authenticated = False
 last_activity_time = 0
 
 # Timeout duration in seconds
-timeout_duration = 5 * 60  
+timeout_duration = 5 * 60
 
 # Session Length
 session_duration = 30 * 60
 
+
 @app.template_filter('nl2br')
 def nl2br_filter(s):
     return s.replace('\n', '<br>')
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -90,16 +84,21 @@ def index():
     if request.method == 'POST':
         user_input = request.form['user_input']
 
-        processed_input, chosen_sections_indexes = embedding_qa.answer_query_with_context(user_input, document_df, document_embedding)
+        processed_input, chosen_sec_idxes = emq.answer_query_with_context(
+            user_input,
+            document_df,
+            document_embedding
+        )
 
         return render_template(
             'index.html',
             processed_input=processed_input,
-            source_sections=chosen_sections_indexes,
+            source_sections=chosen_sec_idxes,
             user_input=user_input,
             authenticated=authenticated)
 
     return render_template('index.html', authenticated=authenticated)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -117,11 +116,13 @@ def login():
 
     return render_template('login.html')
 
+
 @app.route('/logout')
 def logout():
     global authenticated
     authenticated = False
     return redirect(url_for('login'))
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
